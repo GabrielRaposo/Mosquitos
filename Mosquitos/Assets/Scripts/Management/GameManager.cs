@@ -4,60 +4,85 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    [Header("Managers Reference")]
-    public Spawner spawner;
+    enum State { Intro, Playing, Paused }
 
     [Header("UI")]
     public GameObject introLayout;
+    public StageTimer stageTimer;
 
-    enum State { Intro, Playing, Paused }
+    [Header("Gameplay Info")]
+    public CicleManager cicleManager;
+    public Stage[] stages;
+
+    int stageIndex;
     State state;
 
 	void Start ()
     {
-        SetIntroState();
+        SetState(State.Intro);
 	}
 	
-	void SetIntroState()
+	void SetState(State state)
     {
-        if(introLayout) introLayout.SetActive(true);
-        Time.timeScale = 0;
-        state = State.Intro;
+        this.state = state;
+        switch (state)
+        {
+            case State.Intro:
+                if (introLayout) introLayout.SetActive(true);
+                Time.timeScale = 0;
+                break;
+
+            case State.Playing:
+                if (introLayout) introLayout.SetActive(false);
+                Time.timeScale = 1;
+                break;
+
+            case State.Paused:
+                if (introLayout) introLayout.SetActive(true);
+                Time.timeScale = 0;
+                break;
+        }
     }
 
-    void SetPlayingState()
+    void CallStage()
     {
-        if (introLayout) introLayout.SetActive(false);
-        Time.timeScale = 1;
-        state = State.Playing;
+        //mostrar título
+        if(stageIndex < stages.Length) {
+            cicleManager.SetStage(stages[stageIndex]);
+            stageTimer.StartCoroutine(stageTimer.Set(this, stages[stageIndex].duration));
+        } else {
+            //end game
+            Debug.Log("FIM lol");
+        }
+        stageIndex++;
     }
 
-    void SetPausedState()
+    public void EndTimer()
     {
-        if (introLayout) introLayout.SetActive(true);
-        Time.timeScale = 0;
-        state = State.Paused;
+        //Interrompe spawn
+        //Apresenta o repelente
+        //-
+        CallStage();
     }
 
-    public void IsGameplayEnabled(bool value)
+    public void IsPlayerActive(bool value)
     {
         switch (state)
         {
             case State.Intro:
-                if (value)
-                {
-                    spawner.StartCoroutine(spawner.SpawnCicle());
-                    SetPlayingState();
+                if (value) {
+                    CallStage();
+                    SetState(State.Playing);
                 }
-            break;
+                break;
 
             case State.Playing:
-                if (!value) SetPausedState();    
-            break;
+                if (!value) SetState(State.Paused);
+                break;
 
             case State.Paused:
-                if (value) SetPlayingState();
-            break;
+                if (value) SetState(State.Playing);
+                break;
         }
     }
 }

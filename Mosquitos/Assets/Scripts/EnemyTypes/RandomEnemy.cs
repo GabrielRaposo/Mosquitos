@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyRandom : Enemy {
+public class RandomEnemy : Enemy {
 
     public override void Launch()
     {
@@ -12,14 +12,8 @@ public class EnemyRandom : Enemy {
         transform.Rotate(Vector3.forward * angleOffset);
 
         //Gera velocidade na direção definida
-        float localSpeed = speed; // / ((int)size + 1);
-        Vector3 movementIntensity = Vector3.up * localSpeed;
-        float angle = transform.rotation.eulerAngles.z;
-
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb) {
-            rb.velocity = RaposUtil.RotateVector(movementIntensity, angle);
-        } 
+        Vector3 movementIntensity = Vector3.up * speed;
+        GetComponent<Rigidbody2D>().velocity = RaposUtil.RotateVector(movementIntensity, transform.rotation.eulerAngles.z);
     }
 
 }

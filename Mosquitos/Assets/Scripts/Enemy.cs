@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Size {
-    P,
-    M,
-    G
-}
 
 public class Enemy : MonoBehaviour {
 
     public float speed;
     public Size size;
-    [HideInInspector] public EnemyPool pool;
+    EnemyPool pool;
 
-    virtual public void Launch()
+    public void Init(EnemyPool pool)
     {
-        Debug.Log("Launch() sem override.");
+        this.pool = pool;
     }
+
 
     public void SetSize(Size size)
     {
@@ -30,20 +26,48 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    virtual public void Launch() { }
+
+    virtual public void Trigger() { }
+
+    virtual public void Disable()
+    {
+        if (pool) { pool.Return(gameObject); }
+    }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player")) {
             //take player health
-            if (pool) { pool.Return(gameObject); }
+            Disable();
+        } else
+        if (collision.CompareTag("EventTrigger")) {
+            Trigger();
         }
-        //reagir com repelente
+        //interagir com repelente
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Arena"))
-        {
-            if (pool) { pool.Return(gameObject); }
-        }
+        if (collision.CompareTag("Arena")) {
+            Disable();
+        } 
     }
+
+
+}
+
+public enum Size
+{
+    P,
+    M,
+    G
+}
+
+public enum EnemyType
+{
+    Random, 
+    Aim,
+    Chaser
 }

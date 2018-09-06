@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Arena
   - Enemy
+  - EventTrigger
   layers:
   - Default
   - TransparentFX

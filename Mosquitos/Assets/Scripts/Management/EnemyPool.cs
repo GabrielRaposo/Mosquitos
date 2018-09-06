@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyPool : MonoBehaviour
 {
-    public string poolName;
     public GameObject prefab;
     public int quantity;
 
@@ -21,7 +20,7 @@ public class EnemyPool : MonoBehaviour
             pool[i].SetActive(false);
 
             Enemy enemy = pool[i].GetComponent<Enemy>();
-            if(enemy) enemy.pool = this;
+            if(enemy) enemy.Init(this);
         }
     }
 

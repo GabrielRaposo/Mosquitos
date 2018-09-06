@@ -2,19 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour {
+public class CicleManager : MonoBehaviour {
 
+    public Stage[] stages;
     public EnemyPool[] pools;
-    public float spawnDelay;
 
-    public IEnumerator SpawnCicle()
+    public void SetStage(Stage stage)
+    {
+        StopAllCoroutines();
+
+        foreach(EnemyData ed in stage.enemyData)
+        {
+            int poolIndex;
+            switch (ed.type)
+            {
+                default:
+                case EnemyType.Random: poolIndex = 0; break;
+                case EnemyType.Chaser: poolIndex = 1; break;
+                case EnemyType.Aim:    poolIndex = 2; break;
+            }
+            if (ed.ratioPerMinute < 1) ed.ratioPerMinute = 1;
+            StartCoroutine(SpawnCicle(pools[poolIndex], ed.size, 60 / ed.ratioPerMinute));
+        }
+    }
+
+    public IEnumerator SpawnCicle(EnemyPool pool, Size size, float delay)
     {
         while (true)
         {
-            if (spawnDelay < .05f) spawnDelay = .05f;
-            yield return new WaitForSeconds(spawnDelay);
+            if (delay < .05f) delay = .05f;
+            yield return new WaitForSeconds(delay);
             yield return new WaitWhile(() => Time.timeScale < 1);
-            GameObject enemy = pools[0].GetEnemy(RandomizeSpawnPosition(), RandomizeSize());
+            GameObject enemy = pool.GetEnemy(RandomizeSpawnPosition(), size);
         }
     }
 

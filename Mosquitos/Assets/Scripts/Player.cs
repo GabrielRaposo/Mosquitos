@@ -28,25 +28,25 @@ public class Player : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             followMouse.enabled = true;
-            gameManager.IsGameplayEnabled(true);
+            gameManager.IsPlayerActive(true);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             followMouse.enabled = false;
-            gameManager.IsGameplayEnabled(false);
+            gameManager.IsPlayerActive(false);
         }
     }
 
     //private void OnMouseDown()
     //{
     //    followMouse.enabled = true;
-    //    gameManager.IsGameplayEnabled(true);
+    //    gameManager.IsPlayerActive(true);
     //}
 
     //private void OnMouseUp()
     //{
     //    followMouse.enabled = false;
-    //    gameManager.IsGameplayEnabled(false);
+    //    gameManager.IsPlayerActive(false);
     //}
 }
