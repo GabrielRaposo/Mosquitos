@@ -8,17 +8,18 @@ public class GameManager : MonoBehaviour {
 
     [Header("UI")]
     public GameObject introLayout;
-    public StageTimer stageTimer;
 
     [Header("Gameplay Info")]
-    public CicleManager cicleManager;
-    public Stage[] stages;
+    public Spawner cicleManager;
+    public Pattern[] stages;
 
     int stageIndex;
+    Player player;
     State state;
 
 	void Start ()
     {
+        player = Player.instance;
         SetState(State.Intro);
 	}
 	
@@ -44,25 +45,18 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void CallStage()
+    public void CallStage()
     {
-        //mostrar título
-        if(stageIndex < stages.Length) {
-            cicleManager.SetStage(stages[stageIndex]);
-            stageTimer.StartCoroutine(stageTimer.Set(this, stages[stageIndex].duration));
+        if (stageIndex < stages.Length) {
+            Pattern current = stages[stageIndex];
+
+            cicleManager.SetStage(current);
+            //stageTimer.StartCoroutine(stageTimer.Set(this, stages[stageIndex].duration));
         } else {
             //end game
             Debug.Log("FIM lol");
         }
         stageIndex++;
-    }
-
-    public void EndTimer()
-    {
-        //Interrompe spawn
-        //Apresenta o repelente
-        //-
-        CallStage();
     }
 
     public void IsPlayerActive(bool value)

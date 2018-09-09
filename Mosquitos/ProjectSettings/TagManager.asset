@@ -7,6 +7,8 @@ TagManager:
   - Arena
   - Enemy
   - EventTrigger
+  - Collectable
+  - Repeller
   layers:
   - Default
   - TransparentFX

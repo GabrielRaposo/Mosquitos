@@ -11,18 +11,20 @@ public class ChaserEnemy : Enemy {
 
     public override void Launch()
     {
-        rb = GetComponent<Rigidbody2D>();
+        base.Launch();
 
         //começa olhando pro player
+        rb = GetComponent<Rigidbody2D>();
         player = Player.instance;
         transform.rotation = RaposUtil.LookAtPosition(transform.position, player.transform.position);
         follow = true;
 
-        StartCoroutine(DisableTimer(7));
+        StartCoroutine(UnfollowAfterTime(7));
     }
 	
 	void Update ()
     {
+        if (fleeing) return;
         if (follow)
         {
             Vector3 posDiff = player.transform.position - transform.position;
@@ -39,7 +41,7 @@ public class ChaserEnemy : Enemy {
         base.Disable();
     }
 
-    IEnumerator DisableTimer(float time)
+    IEnumerator UnfollowAfterTime(float time)
     {
         yield return new WaitForSeconds(time);
         follow = false;

@@ -6,6 +6,8 @@ public class RandomEnemy : Enemy {
 
     public override void Launch()
     {
+        base.Launch();
+
         //Mira para o centro, errando um pouco às vezes
         transform.rotation = RaposUtil.LookAtPosition(transform.position, Vector3.zero);
         float angleOffset = Random.Range(-25f, 25f);

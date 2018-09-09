@@ -7,12 +7,15 @@ public class EnemyPool : MonoBehaviour
     public GameObject prefab;
     public int quantity;
 
+    Spawner cicleManager;
     GameObject[] pool;
     int index;
     Vector2 originalPosition = Vector2.up * 100; 
 
     void Start()
     {
+        cicleManager = Spawner.instance;
+
         pool = new GameObject[quantity];
         for (int i = 0; i < quantity; i++)
         {
@@ -24,20 +27,21 @@ public class EnemyPool : MonoBehaviour
         }
     }
 
-    public GameObject GetEnemy(Vector2 spawnPosition, Size spawnSize)
+    public GameObject GetEnemy(Vector2 position, float angle)
     {
         GameObject _object = pool[index];
-        _object.transform.position = spawnPosition;
+        _object.transform.position = position;
+        _object.transform.rotation = Quaternion.Euler(Vector3.forward * angle);
         _object.SetActive(true);
 
         Enemy enemy = _object.GetComponent<Enemy>();
         if (enemy)
         {
-            enemy.SetSize(spawnSize);
             enemy.Launch();
         }
 
         index = (index + 1) % quantity;
+        cicleManager.ChangeQuantity(1);
         return _object;
     }
 
@@ -45,5 +49,6 @@ public class EnemyPool : MonoBehaviour
     {
         _object.transform.position = originalPosition;
         _object.SetActive(false);
+        cicleManager.ChangeQuantity(-1);
     }
 }

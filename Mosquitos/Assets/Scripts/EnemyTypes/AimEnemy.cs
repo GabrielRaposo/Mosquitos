@@ -16,19 +16,21 @@ public class AimEnemy : Enemy {
 
     public override void Launch()
     {
+        base.Launch();
+
         player = Player.instance;
         _rigidbody = GetComponent<Rigidbody2D>();
         _renderer = GetComponent<SpriteRenderer>();
         savedColor = _renderer.color;
 
-        //Mira para o centro e lança
-        transform.rotation = RaposUtil.LookAtPosition(transform.position, Vector3.zero);
+        //Lança para a direção que está olhando
         Vector3 movementIntensity = Vector3.up * speed / 2;
         if(_rigidbody) _rigidbody.velocity = RaposUtil.RotateVector(movementIntensity, transform.rotation.eulerAngles.z);
     }
 
     private void Update()
     {
+        if (fleeing) return;
         if (aim)
         {
             Vector3 posDiff = player.transform.position - transform.position;

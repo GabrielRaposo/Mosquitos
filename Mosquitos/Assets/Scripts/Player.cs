@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    [Header("Gameplay Components")]
+    public CircleCollider2D hurtbox;
+    public GameObject hitbox;
+    public SpriteRenderer damageVisual;
+
     [Header("Manager Reference")]
     public GameManager gameManager;
 
@@ -21,6 +26,8 @@ public class Player : MonoBehaviour {
         }
 
         followMouse = GetComponent<FollowMouse>();
+
+        SetInvincibility(false);
     }
 
     private void Update()
@@ -36,6 +43,16 @@ public class Player : MonoBehaviour {
             followMouse.enabled = false;
             gameManager.IsPlayerActive(false);
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            SetInvincibility(true);
+        }
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            SetInvincibility(false);
+        }
     }
 
     //private void OnMouseDown()
@@ -49,4 +66,30 @@ public class Player : MonoBehaviour {
     //    followMouse.enabled = false;
     //    gameManager.IsPlayerActive(false);
     //}
+
+    public void SetInvincibility(bool value)
+    {
+        hurtbox.enabled = !value;
+        hitbox.SetActive(value);
+    }
+
+    public void TakeDamage()
+    {
+        StartCoroutine(DamageEffect());
+
+        //invincibility timer
+    }
+
+    IEnumerator DamageEffect()
+    {
+        followMouse.enabled = false;
+        damageVisual.enabled = true;
+        Time.timeScale = .3f;
+
+        yield return new WaitForSeconds(.3f);
+
+        followMouse.enabled = true;
+        damageVisual.enabled = false;
+        Time.timeScale = 1;
+    }
 }
