@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Name: Wall
   m_EditorClassIdentifier: 
   patternsData:
-  - activationTimer: 6
+  - activationTimer: 3
     spawnSide: 1
-    quantity: 7
+    quantity: 5
     invert: 0
     delayBetweenSpawns: 0
     type: 1
   - activationTimer: 0
     spawnSide: 2
-    quantity: 7
+    quantity: 5
     invert: 0
     delayBetweenSpawns: 0
     type: 1
   - activationTimer: 0
     spawnSide: 0
-    quantity: 9
+    quantity: 5
     invert: 0
     delayBetweenSpawns: 0
     type: 1

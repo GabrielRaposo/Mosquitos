@@ -5,91 +5,103 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     [Header("Gameplay Components")]
-    public CircleCollider2D hurtbox;
-    public GameObject hitbox;
-    public SpriteRenderer damageVisual;
+    public Rescuee rescuee;
+    public LayerMask whatIsRescuee;
+    public float checkRange;
 
     [Header("Manager Reference")]
     public GameManager gameManager;
 
-    FollowMouse followMouse;
-    //FollowTouch followTouch;
+    private FollowMouse followMouse;
+    private FollowTouch followTouch;
 
-    static public Player instance;
+    private enum State { None, Held, Exit }
+    private State state;
 
     private void Awake()
     {
-        if(instance == null) {
-            instance = this;
-        } else {
-            Destroy(gameObject);
-        }
-
         followMouse = GetComponent<FollowMouse>();
-
-        SetInvincibility(false);
+        followTouch = GetComponent<FollowTouch>();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        switch (state)
         {
-            followMouse.enabled = true;
-            gameManager.IsPlayerActive(true);
+            default:
+            case State.None:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (CheckForRescuee(transform.position)) {
+                        rescuee.Follow(transform);
+                    } 
+                    state = State.Held;
+                }
+
+                if (Input.touchCount == 1)
+                {
+                    switch (Input.touches[0].phase)
+                    {
+                        case TouchPhase.Began:
+                            if (CheckForRescuee(transform.position))
+                            {
+                                rescuee.Follow(transform);
+                            }
+                            state = State.Held;
+                            break;
+                    }
+                }
+                break;
+
+            case State.Held:
+                if (Input.GetMouseButtonUp(0))
+                {
+                    rescuee.Unfollow();
+                    state = State.None;
+                }
+                if (Input.touchCount == 1)
+                {
+                    switch (Input.touches[0].phase)
+                    {   
+                        case TouchPhase.Ended:
+                            rescuee.Unfollow();
+                            state = State.None;
+                            break;
+                    }
+                } else 
+                if (Input.touchCount > 1)
+                {
+                    rescuee.Unfollow();
+                    state = State.None;
+                }
+                break;
         }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            followMouse.enabled = false;
-            gameManager.IsPlayerActive(false);
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetInvincibility(true);
-        }
-
-        if (Input.GetMouseButtonUp(1))
-        {
-            SetInvincibility(false);
-        }
+        #region touch
+        //if (Input.touchCount == 1)
+        //{
+        //    switch (Input.touches[0].phase)
+        //    {
+        //        case TouchPhase.Began:
+        //            isPressed = true;
+        //            break;
+        //        case TouchPhase.Ended:
+        //            isPressed = false;
+        //            break;
+        //    }
+        //}
+        #endregion
     }
 
-    //private void OnMouseDown()
-    //{
-    //    followMouse.enabled = true;
-    //    gameManager.IsPlayerActive(true);
-    //}
-
-    //private void OnMouseUp()
-    //{
-    //    followMouse.enabled = false;
-    //    gameManager.IsPlayerActive(false);
-    //}
-
-    public void SetInvincibility(bool value)
+    private bool CheckForRescuee(Vector2 position)
     {
-        hurtbox.enabled = !value;
-        hitbox.SetActive(value);
+        bool search = Physics2D.OverlapCircle(position, checkRange, whatIsRescuee);
+        return search;
     }
 
-    public void TakeDamage()
+    private void OnDrawGizmosSelected()
     {
-        StartCoroutine(DamageEffect());
-
-        //invincibility timer
-    }
-
-    IEnumerator DamageEffect()
-    {
-        followMouse.enabled = false;
-        damageVisual.enabled = true;
-        Time.timeScale = .3f;
-
-        yield return new WaitForSeconds(.3f);
-
-        followMouse.enabled = true;
-        damageVisual.enabled = false;
-        Time.timeScale = 1;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, checkRange);
     }
 }

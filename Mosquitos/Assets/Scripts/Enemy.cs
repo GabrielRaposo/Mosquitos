@@ -6,12 +6,16 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public float speed;
-    EnemyPool pool;
+    public ParticleSystem scareEffect;
+    public ParticleSystem launchEffect;
+
+    private EnemyPool pool;
     protected bool fleeing;
 
     public void Init(EnemyPool pool)
     {
         this.pool = pool;
+        speed *= PlayerAgeData.difficultyScaler;
     }
 
     virtual public void Launch()
@@ -26,37 +30,39 @@ public class Enemy : MonoBehaviour {
         if (pool) { pool.Return(gameObject); }
     }
 
-    void Flee()
+    virtual protected IEnumerator Flee()
     {
-        if (fleeing) return;
-
+        //Trava no lugar por alguns segundos
         fleeing = true;
-        StopAllCoroutines();
-        //animation - startle
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        Vector3 fleeFrom = Vector3.zero;
+        if (Rescuee.instance) fleeFrom = Rescuee.instance.transform.position;
+        Animator animator = GetComponent<Animator>();
+
+        animator.SetTrigger("Scare");
+        if (scareEffect) scareEffect.Play();
+        //play effect
+        yield return new WaitForSeconds(.5f);
 
         //Mira contra o centro
-        Vector3 fleeFrom = Vector3.zero;
-        if (Player.instance) fleeFrom = Player.instance.transform.position;
         transform.rotation = RaposUtil.LookAtPosition(transform.position, fleeFrom);
         transform.Rotate(Vector3.forward * 180);
 
         //Move na direção gerada
         Vector3 movementIntensity = Vector3.up * 7;
         GetComponent<Rigidbody2D>().velocity = RaposUtil.RotateVector(movementIntensity, transform.rotation.eulerAngles.z);
+        animator.SetTrigger("Flee");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) {
-            Player player = collision.GetComponent<Player>();
-            if (player) player.TakeDamage();
-            Flee();
-        } else
         if (collision.CompareTag("EventTrigger")) {
             Trigger();
         } else 
-        if (collision.CompareTag("Repeller")) {
-            Flee();
+        if (collision.CompareTag("Repellent")) {
+            StopAllCoroutines();
+            StartCoroutine(Flee());
         }
     }
 

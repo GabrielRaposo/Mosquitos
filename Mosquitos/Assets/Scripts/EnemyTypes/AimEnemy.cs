@@ -5,23 +5,17 @@ using DG.Tweening;
 
 public class AimEnemy : Enemy {
 
-    Player player;
+    Rescuee target;
     bool aim;
     Rigidbody2D _rigidbody;
-
-    //-----temp stuff-----
-    SpriteRenderer _renderer;
-    Color savedColor;
-    //--------------------
+    Coroutine windUpcoroutine;
 
     public override void Launch()
     {
         base.Launch();
 
-        player = Player.instance;
+        target = Rescuee.instance;
         _rigidbody = GetComponent<Rigidbody2D>();
-        _renderer = GetComponent<SpriteRenderer>();
-        savedColor = _renderer.color;
 
         //Lança para a direção que está olhando
         Vector3 movementIntensity = Vector3.up * speed / 2;
@@ -30,38 +24,51 @@ public class AimEnemy : Enemy {
 
     private void Update()
     {
-        if (fleeing) return;
         if (aim)
         {
-            Vector3 posDiff = player.transform.position - transform.position;
+            Vector3 posDiff = target.transform.position - transform.position;
             transform.DORotate(new Vector3(0, 0, (Mathf.Atan2(posDiff.y, posDiff.x) * Mathf.Rad2Deg) + 270), 2);
         }
     }
 
+    override protected IEnumerator Flee()
+    {
+        aim = false;
+        transform.DOKill();
+        yield return base.Flee();
+    }
+
     public override void Trigger()
     {
-        StartCoroutine(WindUpAndRelease());
+        if(windUpcoroutine == null)
+        {
+            GetComponent<Animator>().SetTrigger("WindUp");
+            windUpcoroutine = StartCoroutine(WindUpAndRelease());
+        }
     }
 
     IEnumerator WindUpAndRelease()
     {
-        _renderer.color = Color.black;
+        yield return new WaitForSeconds(.3f);
         _rigidbody.velocity = Vector3.zero;
 
         aim = true;
         yield return new WaitForSeconds(1);
         aim = false;
 
-        _renderer.color = savedColor;
         Vector3 movementIntensity = Vector3.up * speed;
         _rigidbody.velocity = RaposUtil.RotateVector(movementIntensity, transform.rotation.eulerAngles.z);
+        GetComponent<Animator>().SetTrigger("Shoot");
+        if (launchEffect != null)
+        {
+            launchEffect.Play();
+        }
     }
 
     public override void Disable()
     {
         StopAllCoroutines();
         aim = false;
-        _renderer.color = savedColor;
         base.Disable();
     }
 }

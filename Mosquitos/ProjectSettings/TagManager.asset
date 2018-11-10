@@ -8,7 +8,7 @@ TagManager:
   - Enemy
   - EventTrigger
   - Collectable
-  - Repeller
+  - Repellent
   layers:
   - Default
   - TransparentFX
@@ -18,8 +18,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Player
+  - Rescuee
   - 
   - 
   - 
@@ -43,6 +43,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3158662877
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Collectable
+    uniqueID: 3428687579
+    locked: 0
+  - name: Effects
+    uniqueID: 1161419
     locked: 0

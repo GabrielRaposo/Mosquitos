@@ -11,14 +11,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3acd693651c373f47b08c5eabac8889f, type: 3}
   m_Name: 2-2Line
   m_EditorClassIdentifier: 
+  spawnRepellent: 0
   patternsData:
-  - activationTimer: 1
+  - activationTimer: 3
     spawnSide: 1
     quantity: 2
     invert: 0
     delayBetweenSpawns: 0
     type: 0
-  - activationTimer: 0
+  - activationTimer: 1
     spawnSide: 2
     quantity: 2
     invert: 0

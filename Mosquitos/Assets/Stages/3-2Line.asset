@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Name: 3-2Line
   m_EditorClassIdentifier: 
   patternsData:
-  - activationTimer: 0
+  - activationTimer: 3
     spawnSide: 1
-    quantity: 4
+    quantity: 3
     invert: 0
     delayBetweenSpawns: 0.5
     type: 0
-  - activationTimer: 0
+  - activationTimer: 1
     spawnSide: 2
-    quantity: 5
+    quantity: 2
     invert: 1
     delayBetweenSpawns: 0.5
     type: 0

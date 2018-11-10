@@ -5,14 +5,13 @@ using DG.Tweening;
 
 public class LineEnemy : Enemy
 {
-    Player player;
     Rigidbody2D _rigidbody;
+    Coroutine windUpcoroutine;
 
     public override void Launch()
     {
         base.Launch();
 
-        player = Player.instance;
         _rigidbody = GetComponent<Rigidbody2D>();
 
         //Lança para a direção que está olhando
@@ -22,7 +21,11 @@ public class LineEnemy : Enemy
 
     public override void Trigger()
     {
-        StartCoroutine(WindUpAndRelease());
+        if (windUpcoroutine == null)
+        {
+            GetComponent<Animator>().SetTrigger("WindUp");
+            windUpcoroutine = StartCoroutine(WindUpAndRelease());
+        }
     }
 
     IEnumerator WindUpAndRelease()
@@ -33,6 +36,11 @@ public class LineEnemy : Enemy
 
         Vector3 movementIntensity = Vector3.up * speed;
         _rigidbody.velocity = RaposUtil.RotateVector(movementIntensity, transform.rotation.eulerAngles.z);
+        GetComponent<Animator>().SetTrigger("Shoot");
+        if (launchEffect != null)
+        {
+            launchEffect.Play();
+        }
     }
 
     public override void Disable()

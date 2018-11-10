@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Name: Chasers
   m_EditorClassIdentifier: 
   patternsData:
-  - activationTimer: 1
+  - activationTimer: 4
     spawnSide: 2
     quantity: 1
     invert: 1
     delayBetweenSpawns: 0
     type: 2
-  - activationTimer: 1
+  - activationTimer: 2
     spawnSide: 1
     quantity: 1
     invert: 1

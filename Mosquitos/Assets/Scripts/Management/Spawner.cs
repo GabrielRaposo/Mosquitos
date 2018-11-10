@@ -18,7 +18,7 @@ public class Spawner : MonoBehaviour {
     public void SetStage(Pattern stage)
     {
         StopAllCoroutines();
-        StartCoroutine(StageCicle(stage.patternsData));
+        StartCoroutine(StageCicle(stage.patternsData)); 
     }
 
     public IEnumerator StageCicle(List<PatternData> patternsData)
@@ -32,7 +32,7 @@ public class Spawner : MonoBehaviour {
                 default:
                 case EnemyType.Random: poolIndex = 0; break;
                 case EnemyType.Chaser: poolIndex = 1; break;
-                case EnemyType.Aim: poolIndex = 2; break;
+                case EnemyType.Aim:    poolIndex = 2; break;
             }
 
             yield return SpawnFormation(pattern, pools[poolIndex]);
@@ -61,7 +61,7 @@ public class Spawner : MonoBehaviour {
                 break;
 
             default:
-                guidepoint = new Vector2(0, 6);
+                guidepoint = new Vector2(0, 8);
                 limitCoord = 10f;
                 lineDirection = Vector3.right;
                 break;
@@ -69,7 +69,7 @@ public class Spawner : MonoBehaviour {
 
         lineDirection *= (pattern.invert ? 1 : -1);
 
-        yield return new WaitForSeconds(pattern.activationTimer);
+        yield return new WaitForSeconds(pattern.activationTimer / PlayerAgeData.difficultyScaler);
         for(int i = 0; i < pattern.quantity; i++)
         {
             pool.GetEnemy(
@@ -77,7 +77,9 @@ public class Spawner : MonoBehaviour {
                 SetSpawnRotation(pattern.spawnSide)
             );
             if(pattern.delayBetweenSpawns > 0)
-                yield return new WaitForSeconds(pattern.delayBetweenSpawns);
+            {
+                yield return new WaitForSeconds(pattern.delayBetweenSpawns / PlayerAgeData.difficultyScaler);
+            }
         }
     }
 

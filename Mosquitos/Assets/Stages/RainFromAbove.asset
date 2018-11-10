@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Name: RainFromAbove
   m_EditorClassIdentifier: 
   patternsData:
-  - activationTimer: 1
+  - activationTimer: 3
     spawnSide: 0
-    quantity: 5
+    quantity: 4
     invert: 0
     delayBetweenSpawns: 0.3
     type: 0
-  - activationTimer: 1
+  - activationTimer: 2
     spawnSide: 0
-    quantity: 6
+    quantity: 5
     invert: 1
     delayBetweenSpawns: 0.3
     type: 0
