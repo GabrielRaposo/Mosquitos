@@ -90,14 +90,21 @@ public class Rescuee : MonoBehaviour
 
     public void SetProtection()
     {
+        ClearSymptoms();
         invincible = true;
         protectionHitbox.enabled = true;
         protectionEffect.Play();
     }
 
+    public void CallInvincibilityState()
+    {
+        StartCoroutine(InvincibilityState());
+    }
+
     public IEnumerator InvincibilityState()
     {
         invincible = true;
+        eventSystem = EventSystem.current; 
         eventSystem.enabled = false;
         yield return new WaitForSecondsRealtime(.1f);
         Time.timeScale = 1; 
@@ -151,6 +158,18 @@ public class Rescuee : MonoBehaviour
             yield return Tremble();
             symptomState.ToneDownState();
         }
+    }
+
+    private void ClearSymptoms()
+    {
+        speed = baseSpeed;
+        fadeFeverBorder.enabled = false;
+        if (headacheCoroutine != null) StopCoroutine(headacheCoroutine);
+        CustomImageEffect dizzyEffect = Camera.main.GetComponent<CustomImageEffect>();
+        if (dizzyEffect) dizzyEffect.enabled = false;
+
+        symptom = Symptom.None;
+        symptomState.State = symptom;
     }
 
     private IEnumerator Tremble()

@@ -53,6 +53,10 @@ public class SymptomState : MonoBehaviour {
                     visualComponent.color = nauseatedColor;
                     smileComponent.sprite = nauseatedSmile;
                     break;
+                case Symptom.None:
+                    visualComponent.color = healthyColor;
+                    smileComponent.sprite = healthySmile;
+                    break;
             }
         }
     }

@@ -120,7 +120,8 @@ public class GameManager : MonoBehaviour {
     public void ReturnWithSymptom(Symptom symptom, bool endHere = false)
     {
         rescuee.SetSymptom(symptom);
-        rescuee.StartCoroutine(rescuee.InvincibilityState());
+        //rescuee.StartCoroutine(rescuee.InvincibilityState());
+        rescuee.CallInvincibilityState();
         Time.timeScale = 1;
         if (endHere) stageIndex = repellentIndex;
     }
